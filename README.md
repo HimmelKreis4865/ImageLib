@@ -4,6 +4,9 @@ A better README will follow soon, this is just a simple documentation of the fun
 
 **WARNING:** Right now you need to create your own autoloader or take a look at the bottom of this page!
 
+# Explanation
+ - `Padding` is the distance between the top left corner and the object. It's telling object's position
+
 ## Documentation
 ### Creating images
 You can either create images by getting them from a file:
@@ -116,4 +119,157 @@ use image\color\components\RGB;use image\color\SingleColor;use image\shapes\Circ
 $image->drawShape(new Circle(new Vector2(50, 50), new SingleColor(new RGB(255)), 100));
 ```
 
-### More description will follow soon...WIP
+Since nearly every shape has a different constructor, you should always take a look at the api before using it.
+Current shapes: `image\shapes\Circle`, `image\shapes\Ellipse`, `image\shapes\Line`, `image\shapes\Polygon`, `image\shapes\Rectangle` and `image\shapes\Square`
+
+### Rotation and Flipping
+A `image\Image` can be rotated with
+```php
+$image->rotate($degrees, $change);
+```
+`$degrees` is an Integer containing the angle (-360 up to 360) 
+`$change` is an optional parameter, a boolean that tells the system modify the image directly (`true`) or just return the image (`false`), default is `true`
+
+If you want to flip an Image you can do this by:
+```php
+use utils\FlipTypes;
+
+$image->flip(FlipTypes::TYPE_HORIZONTAL);
+```
+Available flip modes: `FlipTypes::TYPE_HORIZONTAL` (like a mirror), `FlipTypes::TYPE_VERTICAL` (like a 180° rotation) and `FlipTypes::TYPE_BOTH` applying both modes
+
+### Square and resize images
+"square images" stand for images, that are having the same width as height which is pretty useful regarding resizing and other tools
+This can be done by
+
+There are three different square positions, 
+`SquareConverter::TYPE_CENTER`, `SquareConverter::TYPE_LEFT`, `SquareConverter::TYPE_RIGHT`
+
+```php
+<?php
+
+use image\color\components\RGB;
+use image\color\Gradient;
+use image\Image;use utils\SquareConverter;
+
+// creating an image with a different width and height
+// choosing a greater height than width for a purpose, you'll find out later
+$image = Image::make(300, 700);
+
+// adding a gradient to show a difference later
+$image->fill(new Gradient(new RGB(255, 255), new RGB(0, 0, 255)));
+
+// now rotating the image because gradients are only applied from top to bottom (we need it vertical)
+$image->rotate(90);
+
+// now bringing the center:
+$image->toSquare(SquareConverter::TYPE_CENTER);
+
+$image->display();
+```
+
+Sample output:
+
+<img src="https://github.com/HimmelKreis4865/ImageLib/blob/master/docs/img/gradient_square_after.png" alt="gradient_square_after.png">
+
+By the way, before squaring it, the image looked like that:
+<img src="https://github.com/HimmelKreis4865/ImageLib/blob/master/docs/img/gradient_square_before.png" alt="gradient_square_before.png">
+
+You can make some tests for squaring the left or right side with this code too, but we're not presenting it here.
+
+
+To resize an image, you can do the following: `$image->resizeTo($new_width, $new_height)`
+Sometimes it's a good Idea to square it before resizing.
+
+### Put images into another Image
+
+#### Basic version:
+```php
+<?php
+
+use image\color\components\RGB;
+use image\color\SingleColor;
+use image\Image;
+use position\Vector2;
+
+// creating the default image:
+$image = Image::make(500, 500);
+$image->fill(new SingleColor(new RGB(255)));
+
+// creating the target image: (here a sample one you won't find in the code)
+$target = Image::fromFile("test.png");
+
+// squaring and resizing it to get the best result
+// default parameter is center so I leave it out
+$target->toSquare();
+
+$target->resizeTo(400, 400);
+
+// now add the target image to the default one
+$image->addImage($target, new Vector2(50, 50));
+
+$image->display();
+```
+
+Output:
+
+<img src="https://github.com/HimmelKreis4865/ImageLib/blob/master/docs/img/add_image_basic.png" alt="add_image_basic.png">
+
+#### Extended version:
+The difference seems unimportant, but is quite huge:
+```php
+<?php
+
+use image\color\components\RGB;
+use image\color\SingleColor;
+use image\Image;
+use position\Vector2;
+
+// creating the default image:
+$image = Image::make(500, 500);
+$image->fill(new SingleColor(new RGB(255)));
+
+// creating the target image: (here a sample one you won't find in the code)
+$target = Image::fromFile("test.png");
+
+// squaring and resizing it to get the best result
+// default parameter is center so I leave it out
+$target->toSquare();
+
+$target->resizeTo(400, 400);
+
+// now add the target image to the default one
+$image->addImage($target, new Vector2(50, 50), true, 70);
+
+$image->display();
+```
+
+Output:
+
+<img src="https://github.com/HimmelKreis4865/ImageLib/blob/master/docs/img/add_image_extended.png" alt="add_image_extended.png">
+
+This is caused by the 2 additional parameters in `addImage()`:
+ - `true` tells the api to make your image round
+ - `70` is the opacity for this object (`100` is fully covered, `0` makes it invisible)
+
+### More description is on the way...
+
+## Autoloader
+Depending on your OS and folder structure, in a structure like
+```
+ docs
+ image
+ position
+ utils
+ index.php <- Your Entry point
+```
+
+You can use this autoloader (**Before the first class usage**)
+
+```php
+spl_autoload_register(function(string $class) {
+	include str_replace("\u{005C}", DIRECTORY_SEPARATOR, $class) . ".php";
+});
+```
+This should be device independent too
+
