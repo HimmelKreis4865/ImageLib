@@ -10,6 +10,7 @@ use image\shapes\BaseShape;
 use InvalidArgumentException;
 use OutOfRangeException;
 use position\Vector2;
+use utils\Utils;
 use utils\FlipTypes;
 use utils\SquareConverter;
 use function file_exists;

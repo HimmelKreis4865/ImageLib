@@ -5,6 +5,7 @@ namespace image\shapes;
 use image\color\Color;
 use position\Vector2;
 use function imageline;
+
 class Rectangle extends BaseShape {
 	/** @var int $width */
 	protected $width = 400;
