@@ -1,7 +1,7 @@
 # ImageLib
 This PHP Library is designed to be as easy understandable as possible.
 A better README will follow soon, this is just a simple documentation of the functions you have!
-This project is mainly designed to interact with <a href=https://github.com/HimmelKreis4865/phpcord">phpcord</a>.
+This project is mainly designed to interact with <a href="https://github.com/HimmelKreis4865/phpcord">phpcord</a>.
 
 **WARNING:** Right now you need to create your own autoloader or take a look at the bottom of this page!
 
