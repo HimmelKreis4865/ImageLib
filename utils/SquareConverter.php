@@ -11,6 +11,7 @@ use function imagesy;
 use function min;
 
 class SquareConverter {
+	
 	/** @var int type for choosing centered part of the image */
 	public const TYPE_CENTER = 0;
 	
