@@ -13,6 +13,7 @@ use position\Vector2;
 use utils\Utils;
 use utils\FlipTypes;
 use utils\SquareConverter;
+use function base64_encode;
 use function file_exists;
 use function getimagesize;
 use function header;
@@ -39,6 +40,9 @@ use function in_array;
 use function is_dir;
 use function is_resource;
 use function is_string;
+use function ob_end_clean;
+use function ob_get_contents;
+use function ob_start;
 
 final class Image {
 	
@@ -338,5 +342,17 @@ final class Image {
 	public function flip(int $flipMode) {
 		if (in_array($flipMode, [FlipTypes::TYPE_HORIZONTAL, FlipTypes::TYPE_VERTICAL, FlipTypes::TYPE_BOTH]))
 			imageflip($this->image, $flipMode);
+	}
+	
+	public function getRawData(): string {
+		ob_start();
+		imagejpeg($this->image);
+		$content = ob_get_contents();
+		ob_end_clean();
+		return $content;
+	}
+	
+	public function getDataUrl(): string {
+		return "data:image/jpeg;base64," . base64_encode($this->getRawData());
 	}
 }

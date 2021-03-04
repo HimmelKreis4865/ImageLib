@@ -3,8 +3,10 @@
 namespace image\shapes;
 
 use image\color\Color;
+use image\color\Gradient;
 use InvalidArgumentException;
 use position\Vector2;
+use function imagecolorallocate;
 use function imageline;
 
 class Line extends BaseShape {
