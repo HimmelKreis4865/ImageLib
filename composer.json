@@ -1,0 +1,16 @@
+{
+  "name": "himmelkreis4865/imagelib",
+  "description": "A php library for editing images",
+  "type": "library",
+  "license": "GPL-3.0",
+  "require": {
+    "php": "^7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "image\\": "image/",
+      "position\\": "position/",
+      "utils\\": "utils/"
+    }
+  }
+}
