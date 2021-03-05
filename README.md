@@ -3,7 +3,17 @@ This PHP Library is designed to be as easy understandable as possible.
 A better README will follow soon, this is just a simple documentation of the functions you have!
 This project is mainly designed to interact with <a href="https://github.com/HimmelKreis4865/phpcord">phpcord</a>.
 
-**WARNING:** Right now you need to create your own autoloader or take a look at the bottom of this page!
+### Installation
+You can either download this repository directly from github (you have to create your own autoloader in that case)
+or by installing it with [Composer](https://getcomposer.org/).
+You simply would execute `composer require himmelkreis4865/imagelib` once you installed it on your device.
+_You can also download the phar and run it with php as well_
+
+To enjoy composer's autoload you have to add
+```php
+require_once __DIR__ . "/vendor/autoload.php";
+```
+before accessing the first class.
 
 # Explanation
  - `Padding` is the distance between the top left corner and the object. It's telling object's position
