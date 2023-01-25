@@ -6,17 +6,6 @@ use image\color\components\RGB;
 use position\Vector2;
 
 class BaseFont implements Font {
-	/** @var string $text */
-	protected $text;
-	
-	/** @var int $fontSize */
-	protected $fontSize;
-	
-	/** @var Vector2|null $padding */
-	protected $padding;
-	
-	/** @var RGB|null $color */
-	protected $color;
 	
 	/**
 	 * BaseFont constructor.
@@ -26,12 +15,7 @@ class BaseFont implements Font {
 	 * @param Vector2|null $padding
 	 * @param RGB|null $color
 	 */
-	public function __construct(string $text, int $fontSize = 3, ?Vector2 $padding = null, RGB $color = null) {
-		$this->text = $text;
-		$this->fontSize = $fontSize;
-		$this->padding = $padding;
-		$this->color = $color;
-	}
+	public function __construct(private string $text, private int $fontSize = 3, private ?Vector2 $padding = null, private ?RGB $color = null) { }
 	
 	/**
 	 * Returns the content of the text

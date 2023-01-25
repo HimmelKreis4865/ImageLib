@@ -2,6 +2,7 @@
 
 namespace image\shapes;
 
+use GdImage;
 use image\color\Color;
 use image\color\components\RGB;
 use image\color\SingleColor;
@@ -10,9 +11,10 @@ use position\Vector2;
 abstract class BaseShape {
 	
 	/** @var Vector2 $padding */
-	protected $padding;
+	protected Vector2 $padding;
+	
 	/** @var Color $color */
-	protected $color;
+	protected Color $color;
 	
 	public function __construct(?Vector2 $padding = null, ?Color $color = null) {
 		$this->padding = $padding ?? new Vector2(0, 0);
@@ -24,17 +26,17 @@ abstract class BaseShape {
 	 *
 	 * @api
 	 *
-	 * @param $image
+	 * @param GdImage $image
 	 *
-	 * @return mixed
+	 * @return void
 	 */
-	abstract public function draw(&$image);
+	abstract public function draw(GdImage $image): void;
 	
 	
 	/**
 	 * @return Color
 	 */
-	public function getColor() {
+	public function getColor(): Color {
 		return $this->color;
 	}
 	

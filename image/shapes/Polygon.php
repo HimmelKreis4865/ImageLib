@@ -2,6 +2,7 @@
 
 namespace image\shapes;
 
+use GdImage;
 use image\color\Color;
 use position\Vector2;
 use function array_filter;
@@ -10,15 +11,13 @@ use function count;
 use function imagefilledpolygon;
 
 class Polygon extends BaseShape {
-	/** @var Vector2[] $positions */
-	protected $positions = [];
 	
-	/** @var bool $filled */
-	protected $filled = false;
-	
-	public function __construct(array $positions = [], bool $filled = false, ?Color $color = null) {
-		$this->positions = $positions;
-		$this->filled = $filled;
+	/**
+	 * @param Vector2[] $positions
+	 * @param bool $filled
+	 * @param Color|null $color
+	 */
+	public function __construct(private array $positions = [], private bool $filled = false, ?Color $color = null) {
 		parent::__construct(null, $color);
 	}
 	
@@ -29,12 +28,7 @@ class Polygon extends BaseShape {
 		return $this->positions;
 	}
 	
-	/**
-	 * @param $image
-	 *
-	 * @return mixed|void
-	 */
-	public function draw(&$image) {
+	public function draw(GdImage $image): void {
 		$finalPositions = [];
 		$positions = array_map(function($vector2) {
 			return [$vector2->getX(), $vector2->getY()];

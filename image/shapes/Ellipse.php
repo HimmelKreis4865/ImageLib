@@ -2,6 +2,7 @@
 
 namespace image\shapes;
 
+use GdImage;
 use image\color\Color;
 use position\Vector2;
 use function imageellipse;
@@ -9,16 +10,7 @@ use function imagefilledellipse;
 
 class Ellipse extends BaseShape {
 	
-	protected $width;
-	
-	protected $height;
-	
-	protected $filled;
-	
-	public function __construct(?Vector2 $padding = null, ?Color $color = null, int $width = 300, int $height = 300, bool $filled = false) {
-		$this->width = $width;
-		$this->height = $height;
-		$this->filled = $filled;
+	public function __construct(?Vector2 $padding = null, ?Color $color = null, private int $width = 300, private int $height = 300, private bool $filled = false) {
 		parent::__construct($padding, $color);
 	}
 	
@@ -36,19 +28,11 @@ class Ellipse extends BaseShape {
 		return $this->height;
 	}
 	
-	/**
-	 * @param $image
-	 *
-	 * @return mixed|void
-	 */
-	public function draw(&$image) {
-		switch ($this->filled) {
-			case true:
-				imagefilledellipse($image, ($this->getPadding()->getX() + ($this->getWidth() / 2)), ($this->getPadding()->getY() + ($this->getHeight() / 2)), $this->getWidth(), $this->getHeight(), $this->getColor()->getColor($image, 0, $this->getWidth()));
-				break;
-			case false:
-				imageellipse($image, ($this->getPadding()->getX() + ($this->getWidth() / 2)), ($this->getPadding()->getY() + ($this->getHeight() / 2)), $this->getWidth(), $this->getHeight(), $this->getColor()->getColor($image, 0, $this->getWidth()));
-				break;
+	public function draw(GdImage $image): void {
+		if ($this->filled) {
+			imagefilledellipse($image, ($this->getPadding()->getX() + ($this->getWidth() / 2)), ($this->getPadding()->getY() + ($this->getHeight() / 2)), $this->getWidth(), $this->getHeight(), $this->getColor()->getColor($image, 0, $this->getWidth()));
+		} else {
+			imageellipse($image, ($this->getPadding()->getX() + ($this->getWidth() / 2)), ($this->getPadding()->getY() + ($this->getHeight() / 2)), $this->getWidth(), $this->getHeight(), $this->getColor()->getColor($image, 0, $this->getWidth()));
 		}
 	}
 }

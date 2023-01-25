@@ -2,22 +2,15 @@
 
 namespace image\shapes;
 
+use GdImage;
 use image\color\Color;
-use image\color\Gradient;
 use InvalidArgumentException;
 use position\Vector2;
-use function imagecolorallocate;
 use function imageline;
 
 class Line extends BaseShape {
 	
-	protected $endPos;
-	
-	protected $size;
-	
-	public function __construct(?Vector2 $beginPos = null, ?Vector2 $endPos = null, int $size  = 1, ?Color $color = null) {
-		$this->endPos = $endPos;
-		$this->size = $size;
+	public function __construct(?Vector2 $beginPos = null, private ?Vector2 $endPos = null, private int $size  = 1, ?Color $color = null) {
 		parent::__construct($beginPos, $color);
 		if ($this->getBeginPos()->getX() !== $this->getEndPos()->getX() and $this->getBeginPos()->getY() !== $this->getEndPos()->getY())
 			throw new InvalidArgumentException("Cannot create a line with completely different coordinates!");
@@ -37,12 +30,7 @@ class Line extends BaseShape {
 		return parent::getPadding();
 	}
 	
-	/**
-	 * @param $image
-	 *
-	 * @return mixed|void
-	 */
-	public function draw(&$image) {
+	public function draw(GdImage $image): void {
 		if ($this->getBeginPos()->getX() < $this->getEndPos()->getX()) {
 			$size = ($this->getEndPos()->getX() - $this->getBeginPos()->getX());
 			for ($i = $this->getBeginPos()->getX(); $i < $this->getEndPos()->getX(); $i++) {

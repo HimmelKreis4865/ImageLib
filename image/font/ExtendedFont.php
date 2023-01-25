@@ -9,46 +9,23 @@ use function file_exists;
 use const DIRECTORY_SEPARATOR;
 
 class ExtendedFont implements Font {
-	/** @var string $text */
-	protected $text;
-	
-	/** @var string $fontPath */
-	protected $fontPath;
-	
-	/** @var float|int $fontSize */
-	protected $fontSize;
-	
-	/** @var float $angle */
-	protected $angle;
-	
-	/** @var Vector2|null $padding */
-	protected $padding;
-	
-	/** @var RGB|null $color */
-	protected $color;
 	
 	/**
 	 * ExtendedFont constructor.
 	 *
 	 * @param string $text
 	 * @param string $fontPath can either be a path you like or a predefined path (in /fonts/*.ttf) - You have to add the extension (.ttf)
-	 * @param float|int $fontSize
+	 * @param float $fontSize
 	 * @param float $angle enter an angle of the font here, goes clockwise from top (0.0)
 	 * @param Vector2|null $padding
 	 * @param RGB|null $color
 	 */
-	public function __construct(string $text, string $fontPath,  float $fontSize = 3, float $angle = 0.0, ?Vector2 $padding = null, RGB $color = null) {
-		if (!file_exists($fontPath)) {
+	public function __construct(private string $text, private string $fontPath,  private float $fontSize = 3.0, private float $angle = 0.0, private ?Vector2 $padding = null, private ?RGB $color = null) {
+		if (!file_exists($this->fontPath)) {
 			// todo: clean this up
-			$fontPath = __DIR__ . DIRECTORY_SEPARATOR . "fonts" . DIRECTORY_SEPARATOR . $fontPath;
-			if (!file_exists($fontPath)) throw new InvalidArgumentException("Could not find a font under name $fontPath");
+			$this->fontPath = __DIR__ . DIRECTORY_SEPARATOR . "fonts" . DIRECTORY_SEPARATOR . $this->fontPath;
+			if (!file_exists($this->fontPath)) throw new InvalidArgumentException("Could not find a font under name " . $this->fontPath);
 		}
-		$this->text = $text;
-		$this->fontPath = $fontPath;
-		$this->fontSize = $fontSize;
-		$this->angle = $angle;
-		$this->padding = $padding;
-		$this->color = $color;
 	}
 	
 	/**

@@ -2,6 +2,7 @@
 
 namespace image\color;
 
+use GdImage;
 use function ctype_xdigit;
 use function hexdec;
 use function is_int;
@@ -17,13 +18,13 @@ abstract class Color {
 	 *
 	 * @internal
 	 *
-	 * @param $image
+	 * @param GdImage $image
 	 * @param int $i important for multicolored classes such as Gradient
 	 * @param int $size important for multicolored classes such as Gradient
 	 *
 	 * @return false|int
 	 */
-	abstract public function getColor($image, int $i, int $size);
+	abstract public function getColor(GdImage $image, int $i, int $size): false|int;
 	
 	/**
 	 * Returns a color number by a hex, might be used in future versions

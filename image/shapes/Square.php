@@ -2,13 +2,12 @@
 
 namespace image\shapes;
 
+use GdImage;
 use image\color\Color;
 use position\Vector2;
 use function imageline;
 
 class Square extends BaseShape {
-	/** @var int $size */
-	protected $size;
 	
 	/**
 	 * Square constructor.
@@ -17,17 +16,11 @@ class Square extends BaseShape {
 	 * @param int $size
 	 * @param Color|null $color
 	 */
-	public function __construct(?Vector2 $padding = null, int $size = 300, ?Color $color = null) {
-		$this->size = $size;
+	public function __construct(?Vector2 $padding = null, private int $size = 300, ?Color $color = null) {
 		parent::__construct($padding, $color);
 	}
 	
-	/**
-	 * @param $image
-	 *
-	 * @return void
-	 */
-	public function draw(&$image) {
+	public function draw(GdImage $image): void {
 		for ($i = $this->getPadding()->getY(); $i < ($this->size + $this->getPadding()->getY()); $i++) {
 			imageline($image, $this->getPadding()->getX(), $i, ($this->size + $this->getPadding()->getX()), $i, $this->getColor()->getColor($image, $i, ($this->getPadding()->getY() + $this->size)));
 		}

@@ -10,5 +10,5 @@ interface ColorComponent {
      *
      * @return bool
      */
-    public static function isValid($data): bool;
+    public static function isValid(mixed $data): bool;
 }

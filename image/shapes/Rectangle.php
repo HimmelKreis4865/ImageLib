@@ -2,16 +2,12 @@
 
 namespace image\shapes;
 
+use GdImage;
 use image\color\Color;
 use position\Vector2;
 use function imageline;
 
 class Rectangle extends BaseShape {
-	/** @var int $width */
-	protected $width = 400;
-	
-	/** @var int $height */
-	protected $height = 400;
 	
 	/**
 	 * Rectangle constructor.
@@ -21,18 +17,11 @@ class Rectangle extends BaseShape {
 	 * @param int $height
 	 * @param Color|null $color
 	 */
-	public function __construct(?Vector2 $padding = null, int $width = 400, int $height = 400, ?Color $color = null) {
-		$this->width = $width;
-		$this->height = $height;
+	public function __construct(?Vector2 $padding = null, private int $width = 400, private int $height = 400, ?Color $color = null) {
 		parent::__construct($padding, $color);
 	}
 	
-	/**
-	 * @param $image
-	 *
-	 * @return mixed|void
-	 */
-	public function draw(&$image) {
+	public function draw(GdImage $image): void {
 		for ($i = $this->getPadding()->getY(); $i < ($this->getPadding()->getY() + $this->height); $i++) {
 			imageline($image, $this->getPadding()->getX(), $i, ($this->getPadding()->getX() + $this->width), $i, $this->getColor()->getColor($image, $i, ($this->getPadding()->getY() + $this->height)));
 		}

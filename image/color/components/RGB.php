@@ -11,16 +11,8 @@ class RGB implements ColorComponent {
     
     /** @var int max value for a RGB tag */
     public const MAX_VAL = 255;
-    
-    
-    /** @var int $red */
-    private $red;
-    
-    /** @var int $green */
-    private $green;
-    
-    /** @var int $blue */
-    private $blue;
+	
+    private int $red;
 
     /**
      * RGB constructor.
@@ -29,7 +21,7 @@ class RGB implements ColorComponent {
      * @param int $green
      * @param int $blue
      */
-    public function __construct($red, int $green = 0, int $blue = 0) {
+    public function __construct($red, private int $green = 0, private int $blue = 0) {
         if (is_array($red)) {
             $rgb = self::fromArray($red);
             if ($rgb === null) throw new \InvalidArgumentException("Could not parse rgb due to invalid input array!");
@@ -37,8 +29,6 @@ class RGB implements ColorComponent {
             return;
         }
         $this->red = $red;
-        $this->green = $green;
-        $this->blue = $blue;
     }
 
 

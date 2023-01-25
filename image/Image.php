@@ -2,6 +2,7 @@
 
 namespace image;
 
+use GdImage;
 use image\color\Color;
 use image\font\BaseFont;
 use image\font\ExtendedFont;
@@ -49,37 +50,17 @@ final class Image {
 	/** @var string[] an array with all currently supported extensions */
 	public const SUPPORTED_EXTENSIONS = ["png", "jpg", "jpeg"];
 	
-	/** @var resource $image */
-	public $image;
-	
-	/**
-	 * @var int $width manual width,
-	 * will be removed in future and replaced with @see imagesx
-	 */
-	protected $width;
-	
-	/**
-	 * @var int $height manual height,
-	 * will be removed in future and replaced with @see imagesy()
-	 */
-	protected $height;
-	
 	/**
 	 * Image constructor.
 	 *
-	 * @param resource $image has a type of resource,
+	 * @param GdImage $image has a type of resource,
 	 * to create an image @see Image::make()
 	 * or import it from a file @see Image::fromFile()
 	 *
 	 * @param int $width width for the image, will be removed in future
 	 * @param int $height height of the image, will be removed in future
 	 */
-	public function __construct($image, int $width = 500, int $height = 500) {
-		if (!is_resource($image)) throw new InvalidArgumentException("Given image is not a valid resource!");
-		$this->image = $image;
-		$this->width = $width;
-		$this->height = $height;
-	}
+	public function __construct(public GdImage $image, private int $width = 500, private int $height = 500) { }
 	
 	/**
 	 * Tries to create an image from a path (already existing file)
@@ -120,9 +101,9 @@ final class Image {
 	 *
 	 * @param string $path
 	 *
-	 * @return false|\GdImage|resource|null
+	 * @return GdImage|null|false
 	 */
-	protected static function createImage(string $path) {
+	protected static function createImage(string $path): GdImage|null|false {
 		$ext = Utils::getFileExtension($path);
 		
 		switch ($ext) {
@@ -151,7 +132,7 @@ final class Image {
 	 * @param Vector2 $position
 	 * @param Color $color Can be a gradient
 	 */
-	public function drawTriangle(int $size, Vector2 $position, Color $color) {
+	public function drawTriangle(int $size, Vector2 $position, Color $color): void {
 		for ($i = $position->getY(); $i < ($size + $position->getY()); $i++) {
 			imageline($this->image, $i, $i, ($size + $position->getX()), $i, $color->getColor($this->image, $i, $size));
 		}
@@ -164,7 +145,7 @@ final class Image {
 	 *
 	 * @param Color $color Can be a gradient
 	 */
-	public function fill(Color $color) {
+	public function fill(Color $color): void {
 		if ($color->isSingleColored()) {
 			imagefill($this->image, 0, 0, $color->getColor($this->image, 0, 0));
 			return;
@@ -182,9 +163,9 @@ final class Image {
 	 * @param int $degrees
 	 * @param bool $change if true, the image will automatically change its rotation too
 	 *
-	 * @return false|\GdImage|resource
+	 * @return false|GdImage|resource
 	 */
-	public function rotate(int $degrees, bool $change = true) {
+	public function rotate(int $degrees, bool $change = true): false|GdImage {
 		if ($degrees < 0 or $degrees > 360) throw new OutOfRangeException("You can only rotate between 0-360 degrees! $degrees is out of range!");
 		$image = imagerotate($this->image, floatval($degrees), 0);
 		if ($change) $this->image = $image;
@@ -198,7 +179,7 @@ final class Image {
 	 *
 	 * @param BaseShape $baseShape
 	 */
-	public function drawShape(BaseShape $baseShape) {
+	public function drawShape(BaseShape $baseShape): void {
 		$baseShape->draw($this->image);
 	}
 	
@@ -207,7 +188,7 @@ final class Image {
 	 *
 	 * @api
 	 */
-	public function display() {
+	public function display(): void {
 		header('Content-Type: image/png');
 		imagepng($this->image);
 		imagedestroy($this->image);
@@ -220,7 +201,7 @@ final class Image {
 	 *
 	 * @param string $path
 	 */
-	public function save(string $path) {
+	public function save(string $path): void {
 		if (file_exists($path) or is_dir($path)) throw new InvalidArgumentException("Cannot overwrite an existing element for save progress!");
 		
 		switch (Utils::getFileExtension($path)) {
@@ -241,7 +222,7 @@ final class Image {
 	 *
 	 * @param string|Font $text
 	 */
-	public function addBaseText($text) {
+	public function addBaseText(Font|string $text): void {
 		if (is_string($text)) $text = new BaseFont($text);
 		if (!$text instanceof Font) throw new InvalidArgumentException("You can either pass a Font instance or a string to add!");
 		imagestring($this->image, $text->getFontSize(), $text->getPadding()->getX(), $text->getPadding()->getY(), $text->getText(), $text->getColor()->toImageInt($this->image));
@@ -254,7 +235,7 @@ final class Image {
 	 *
 	 * @param ExtendedFont $font
 	 */
-	public function addExtendedText(ExtendedFont $font) {
+	public function addExtendedText(ExtendedFont $font): void {
 		imagettftext($this->image, $font->getFontSize(), $font->getAngle(), $font->getPadding()->getX(), $font->getPadding()->getY(), $font->getColor()->toImageInt($this->image), $font->getFontPath(), $font->getText());
 	}
 	
@@ -269,13 +250,12 @@ final class Image {
 	 * For a great experience and nice looking pictures, use @see Image::toSquare() before
 	 * @param int $opacity
 	 */
-	public function addImage(Image $image, Vector2 $padding, bool $rounded = false, int $opacity = 100) {
+	public function addImage(Image $image, Vector2 $padding, bool $rounded = false, int $opacity = 100): void {
 		$image = $image->image;
 		$width = imagesx($image);
 		$height = imagesy($image);
 		
 		if ($rounded) {
-			
 			$mask = imagecreatetruecolor($width, $height);
 			$maskTransparent = imagecolorallocate($mask, 255, 0, 255);
 			imagecolortransparent($mask, $maskTransparent);
@@ -302,7 +282,7 @@ final class Image {
 	 * @param int $width
 	 * @param int $height
 	 */
-	public function resizeTo(int $width, int $height) {
+	public function resizeTo(int $width, int $height): void {
 		$new = imagecreatetruecolor($width, $height);
 		imagecopyresampled($new, $this->image, 0, 0, 0, 0, $width, $height, imagesx($this->image), imagesy($this->image));
 		$this->image = $new;
@@ -317,7 +297,7 @@ final class Image {
 	 *
 	 * @param int $type
 	 */
-	public function toSquare(int $type = SquareConverter::TYPE_CENTER) {
+	public function toSquare(int $type = SquareConverter::TYPE_CENTER): void {
 		switch ($type) {
 			case SquareConverter::TYPE_CENTER:
 				$this->image = SquareConverter::converterToCenter($this->image);
@@ -339,7 +319,7 @@ final class Image {
 	 * @param int $flipMode for valid modes,
 	 * checkout @see FlipTypes
 	 */
-	public function flip(int $flipMode) {
+	public function flip(int $flipMode): void {
 		if (in_array($flipMode, [FlipTypes::TYPE_HORIZONTAL, FlipTypes::TYPE_VERTICAL, FlipTypes::TYPE_BOTH]))
 			imageflip($this->image, $flipMode);
 	}

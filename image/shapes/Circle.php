@@ -2,18 +2,19 @@
 
 namespace image\shapes;
 
+use GdImage;
 use image\color\Color;
 use position\Vector2;
 
 class Circle extends BaseShape {
-	/** @var int $size */
-	protected $size;
-	/** @var bool $filled */
-	protected $filled = false;
 	
-	public function __construct(?Vector2 $padding, ?Color $color, int $size = 200, bool $filled = false) {
-		$this->size = $size;
-		$this->filled = $filled;
+	/**
+	 * @param Vector2|null $padding
+	 * @param Color|null $color
+	 * @param int $size
+	 * @param bool $filled
+	 */
+	public function __construct(?Vector2 $padding, ?Color $color, protected int $size = 200, protected bool $filled = false) {
 		parent::__construct($padding, $color);
 	}
 	
@@ -24,12 +25,7 @@ class Circle extends BaseShape {
 		return $this->size;
 	}
 	
-	/**
-	 * @param $image
-	 *
-	 * @return mixed|void
-	 */
-	public function draw(&$image) {
+	public function draw(GdImage $image): void {
 		$ellipse = new Ellipse($this->getPadding(), $this->getColor(), $this->getSize(), $this->getSize(), $this->filled);
 		$ellipse->draw($image);
 	}
